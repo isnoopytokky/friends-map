@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/main.css" rel="stylesheet">
+    <script type="text/javascript" src="js/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmtY2chyUNVh5XVSkSs7SQrmQe3d4IkHI&sensor=false"></script>
+  </head>
+
+  <body>
+    <div id="fb-root"></div>
+
+    <script type="text/javascript" src="js/main.js"></script>
+
+    <div id="banner" class="row-fluid">
+      <div class="span9">
+        <table >
+          <tr>
+            <td>
+              <h1>Where are your friends?</h1>
+            </td>
+            <td class="btn-group after" data-toggle="buttons-radio">
+              <button type="button" class="btn btn-info active" id="currently">Location</button>
+              <button type="button" class="btn btn-success" id="hometown">Hometown</button>
+            </td>
+            <td>
+              <span id="label"> Friend List </span>
+            </td>
+            <td>
+              <div class="btn-group after">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                  All <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                <!-- dropdown menu links -->
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="span3">
+        <fb:login-button show-faces="true" scope="friends_location,friends_hometown,read_friendlists" width="300" max-rows="1" size="xlarge" >
+        </fb:login-button>
+      </div>
+    </div>
+
+    <div id="map-canvas"/>
+
+  </body>
+</html>

@@ -1,0 +1,55 @@
+html { 
+    height: 100% 
+}
+
+body { 
+    height: 100%; 
+    margin: 0; 
+    padding: 0; 
+}
+
+#map-canvas { 
+    height: 100% 
+}
+
+#map-canvas img { 
+    max-width: none;
+}
+
+#title {
+    font-size: 36px;
+    margin:10px;
+}
+
+table { 
+    width: 100%; 
+    margin: 0; 
+    padding: 0; 
+    margin-top: 5px; 
+}
+
+#login {
+    float: right;
+}
+
+.after {
+    display: none;
+}
+
+#banner {
+    background: #A5BFDD; 
+    border-bottom: solid; 
+}
+
+h1 {
+    color: #6DA66A; 
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; 
+    margin-left: 20px 
+}
+
+#label {
+    display: inline; 
+    font-size: 24px; 
+    float: right; 
+    margin-right: 10px
+}
