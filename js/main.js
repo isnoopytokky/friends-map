@@ -6,7 +6,7 @@ var friendLists = [];
 window.fbAsyncInit = function() {
   FB.init({
     appId      : '383099538461243', // App ID
-    channelUrl : '//logstown.mycloudnas.com/friends-map/channel.html', // Channel File
+    channelUrl : '//loganjoecks.com/friends-map/channel.html', // Channel File
     status     : true, // check login status
     cookie     : true, // enable cookies to allow the server to access the session
     xfbml      : true  // parse XFBML
