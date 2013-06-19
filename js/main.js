@@ -121,75 +121,77 @@ function initialize(map, place, friendList) {
   //Get all friends with fields name, picture, link and either location or homtown 
   FB.api('/me/friends?fields=name,picture,link,' + place, function(response) {
 
+    var url = '?ids=';
+
     // Setup location array where locations[placeID] = list of friends and their data in that city
     for (var i=0; i < response.data.length; i++) {
-      if(response.data[i][place] != undefined && (friendList === 'All' ||($.inArray(response.data[i].id, friendLists[friendList]) >= 0))) {
-        if(locations[response.data[i][place].id] == undefined) {
-          locations[response.data[i][place].id] = [];
+      var friend = response.data[i];
+      if(friend[place] != undefined && (friendList === 'All' ||($.inArray(friend.id, friendLists[friendList]) >= 0))) {
+        if(locations[friend[place].id] == undefined) {
+          locations[friend[place].id] = [];
+          url += friend[place].id + ',';
         }
-        locations[response.data[i][place].id].push(response.data[i]);
+        locations[friend[place].id].push(friend);
       }
     }
+
+    //Remove trailing comma
+    url = url.substring(0, url.length-1);
 
     // For each city in the locations array, add a marker and info window
     // Markers may be a group marker (friendlist > 1) or individual.
     // Infowindows can list friends in that city or display a single friend.
-    for(var city in locations) {
-
-      (function(){
-        var c = city;
-
-        FB.api(city, function(res) {
-          var cityFriends = locations[c];
-          var myLatlng = new google.maps.LatLng(res.location.latitude, res.location.longitude);
-          var icon, title, contentString;
+    FB.api(url, function(res) {
+      jQuery.each(res, function(id, city) {
+        var cityFriends = locations[id];
+        var myLatlng = new google.maps.LatLng(city.location.latitude, city.location.longitude);
+        var icon, title, contentString;
+        
+        if (cityFriends.length == 1) {
+          icon = cityFriends[0].picture.data.url;
+          title = cityFriends[0].name + " (" + cityFriends[0][place].name + ")";
+          contentString = '<center><strong><a href="' + cityFriends[0].link + '">' + cityFriends[0].name + "</a></strong>" + '<br> (<a href="'+ city.link + '">' + cityFriends[0][place].name + "</a>)</center>";
+        }
+        else {
+          icon = "https://fbcdn-profile-a.akamaihd.net/static-ak/rsrc.php/v2/yo/r/UlIqmHJn-SK.gif";
           
-          if (cityFriends.length == 1) {
-            icon = cityFriends[0].picture.data.url;
-            title = cityFriends[0].name + " (" + cityFriends[0][place].name + ")";
-            contentString = '<center><strong><a href="' + cityFriends[0].link + '">' + cityFriends[0].name + "</a></strong>" + '<br> (<a href="'+ res.link + '">' + cityFriends[0][place].name + "</a>)</center>";
+          title = cityFriends.length; 
+          title += (place === 'location') ? ' in ' : ' from ';
+          title += cityFriends[0][place].name;
+          
+          contentString = '<center><h4>' + cityFriends[0][place].name + '</h4></center><table>';
+          for(i=0; i < cityFriends.length; i++) {
+            contentString += '<tr>'+
+              '<td>'+
+              '<img src="' + cityFriends[i].picture.data.url + '">'+
+              '</td>'+
+              '<td>'+
+              '<a href="' + cityFriends[i].link + '">'+ 
+              cityFriends[i].name
+              '</a></td>'+
+              '</tr>';
           }
-          else {
-            icon = "https://fbcdn-profile-a.akamaihd.net/static-ak/rsrc.php/v2/yo/r/UlIqmHJn-SK.gif";
-            
-            title = cityFriends.length; 
-            title += (place === 'location') ? ' in ' : ' from ';
-            title += cityFriends[0][place].name;
-            
-            contentString = '<center><h4>' + cityFriends[0][place].name + '</h4></center><table>';
-            for(i=0; i < cityFriends.length; i++) {
-              contentString += '<tr>'+
-                '<td>'+
-                '<img src="' + cityFriends[i].picture.data.url + '">'+
-                '</td>'+
-                '<td>'+
-                '<a href="' + cityFriends[i].link + '">'+ 
-                cityFriends[i].name
-                '</a></td>'+
-                '</tr>';
-            }
-            contentString += '</table>';
-          }
+          contentString += '</table>';
+        }
 
-          var marker = new google.maps.Marker({
-            map: map,
-            position: myLatlng,
-            icon: icon,
-            title: title,
-            animation: google.maps.Animation.DROP
-          });
-
-          markersArray.push(marker);
-
-          google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(contentString)
-            infowindow.open(map,marker);
-          });
-          markerBounds.extend(myLatlng);
-          map.fitBounds(markerBounds);
+        var marker = new google.maps.Marker({
+          map: map,
+          position: myLatlng,
+          icon: icon,
+          title: title,
+          animation: google.maps.Animation.DROP
         });
-      })();
-    }
+
+        markersArray.push(marker);
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(contentString)
+          infowindow.open(map,marker);
+        });
+        markerBounds.extend(myLatlng);
+        map.fitBounds(markerBounds);
+      });
+    });
   });
 }
 
